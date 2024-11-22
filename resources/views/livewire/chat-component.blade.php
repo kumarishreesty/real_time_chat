@@ -1,77 +1,89 @@
-<div>
-  <div style="overscroll-behavior: none;">
-    <div
-      class="fixed w-full bg-green-400 h-16 pt-2 text-white flex justify-between shadow-md"
-      style="top:0px; overscroll-behavior: none;">
-      <!-- back button -->
-      <a href="/dashboard">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          class="w-12 h-12 my-1 text-green-100 ml-2">
-          <path
-            class="text-green-100 fill-current"
-            d="M9.41 11H17a1 1 0 0 1 0 2H9.41l2.3 2.3a1 1 0 1 1-1.42 1.4l-4-4a1 1 0 0 1 0-1.4l4-4a1 1 0 0 1 1.42 1.4L9.4 11z" />
-        </svg>
-      </a>
-      <div class="my-3 text-green-100 font-bold text-lg tracking-wide">{{$user->name}}</div>
-      <!-- 3 dots -->
+<div style="overscroll-behavior: none;">
+  <!-- Header Section -->
+  <div
+    class="fixed w-full bg-gradient-to-r from-green-500 to-green-400 h-16 flex items-center justify-between text-white shadow-md px-4"
+    style="top: 0;">
+    <!-- Back Button -->
+    <a href="/dashboard" class="flex items-center hover:opacity-90 transition">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
-        class="icon-dots-vertical w-8 h-8 mt-2 mr-2">
+        class="w-8 h-8 mr-2">
         <path
-          class="text-green-100 fill-current"
+          class="fill-current"
+          d="M9.41 11H17a1 1 0 0 1 0 2H9.41l2.3 2.3a1 1 0 1 1-1.42 1.4l-4-4a1 1 0 0 1 0-1.4l4-4a1 1 0 0 1 1.42 1.4L9.4 11z" />
+      </svg>
+      <!-- <span class="text-sm font-semibold">Back</span> -->
+    </a>
+    
+    <!-- User Info -->
+    <div class="flex items-center space-x-2">
+      <!-- <img src="/path-to-profile-icon" alt="User" class="w-10 h-10 rounded-full border-2 border-white"> -->
+      <div class="font-bold text-lg tracking-wide">{{$user->name}}</div>
+    </div>
+
+    <!-- Options Menu -->
+    <div class="relative group">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        class="icon-dots-vertical w-8 h-8 cursor-pointer">
+        <path
+          class="fill-current"
           fill-rule="evenodd"
           d="M12 7a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 7a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 7a2 2 0 1 1 0-4 2 2 0 0 1 0 4z" />
       </svg>
-    </div>
-
-    <div class="mt-20 mb-16">
-
-      @foreach($messages as $message)
-
-      @if($message['sender'] != auth()->user()->name)
-      <div class="clearfix w-4/4">
-        <div
-          class="bg-gray-300 mx-4 my-2 p-2 rounded-lg inline-block"><b>{{ $message['sender'] }} : </b>{{ $message['message'] }}</div>
+      <div
+        class="absolute right-0 mt-2 hidden group-hover:block bg-white text-black rounded shadow-lg py-1 w-32">
+        <a href="#" class="block px-4 py-2 hover:bg-gray-200">Settings</a>
+        <a href="#" class="block px-4 py-2 hover:bg-gray-200">Logout</a>
       </div>
-      @else
-      <div class="clearfix w-4/4">
-        <div class="text-right">
-          <p class="bg-green-300 mx-4 my-2 p-2 rounded-lg inline-block">{{ $message['message'] }} <b>: You</b></p>
-        </div>
-      </div>
-      @endif
-
-
-      @endforeach
     </div>
   </div>
 
+  <!-- Messages Section -->
+  <div class="mt-20 mb-20">
+    @foreach($messages as $message)
+    @if($message['sender'] != auth()->user()->name)
+    <!-- Received Message -->
+    <div class="clearfix w-full flex items-center my-4 px-4">
+      <!-- <img src="/path-to-sender-icon" alt="Sender" class="w-10 h-10 rounded-full border-2 border-gray-300"> -->
+      <div class="bg-gray-100 ml-4 p-3 rounded-lg shadow-md">
+        <!-- <b class="text-gray-800">{{ $message['sender'] }}:</b> -->
+        <p class="text-gray-700">{{ $message['message'] }}</p>
+      </div>
+    </div>
+    @else
+    <!-- Sent Message -->
+    <div class="clearfix w-full flex justify-end my-4 px-4">
+      <div class="bg-green-100 p-3 rounded-lg shadow-md text-right">
+        <p class="text-gray-700">{{ $message['message'] }}</p>
+        <!-- <b class="text-green-700">: You</b> -->
+      </div>
+    </div>
+    @endif
+    @endforeach
+  </div>
 
-  <form wire:submit="sendMessage()">
-
-    <div class="fixed w-full flex justify-between bg-green-100" style="bottom: 0px;">
+  <!-- Message Input Section -->
+  <form wire:submit="sendMessage()" class="fixed w-full bottom-0 bg-white border-t border-gray-300">
+    <div class="flex items-center p-2">
       <textarea
-        class="flex-grow m-2 py-2 px-4 mr-1 rounded-full border border-gray-300 bg-gray-200 resize-none"
+        class="flex-grow m-2 py-2 px-4 rounded-full border border-gray-300 bg-gray-100 resize-none focus:outline-none focus:ring-2 focus:ring-green-400"
         rows="1"
         wire:model="message"
-        placeholder="Message..."
-        style="outline: none;"></textarea>
-      <button class="m-2" type="submit" style="outline: none;">
+        placeholder="Type your message...">
+      </textarea>
+      <button
+        class="bg-green-500 text-white p-2 rounded-full hover:bg-green-600 transition focus:outline-none"
+        type="submit">
         <svg
-          class="svg-inline--fa text-green-400 fa-paper-plane fa-w-16 w-12 h-12 py-2 mr-2"
-          aria-hidden="true"
-          focusable="false"
-          data-prefix="fas"
-          data-icon="paper-plane"
-          role="img"
+          class="w-6 h-6"
           xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 512 512">
+          viewBox="0 0 24 24"
+          fill="currentColor">
           <path
-            fill="currentColor"
-            d="M476 3.2L12.5 270.6c-18.1 10.4-15.8 35.6 2.2 43.2L121 358.4l287.3-253.2c5.5-4.9 13.3 2.6 8.6 8.3L176 407v80.5c0 23.6 28.5 32.9 42.5 15.8L282 426l124.6 52.2c14.2 6 30.4-2.9 33-18.2l72-432C515 7.8 493.3-6.8 476 3.2z" />
+            d="M21.426 11.079l-18-8A1 1 0 0 0 2 4v16a1 1 0 0 0 1.426.922l18-8a1 1 0 0 0 0-1.843z" />
         </svg>
       </button>
     </div>
